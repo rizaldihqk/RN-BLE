@@ -192,12 +192,17 @@ export default function Scan() {
 
   return (
     <View style={styles.container}>
-      <Button title="Scan for Devices" onPress={scanDevices} />
+      <Button
+        title={isLoadingScan ? 'Scanning...' : 'Scan for Devices'}
+        disabled={isLoadingScan}
+        onPress={scanDevices}
+      />
       <FlatList
         keyboardDismissMode="none"
         data={devices}
         keyExtractor={(item, i) => `${item.id}-${i}`}
         renderItem={renderItem}
+        contentContainerStyle={{paddingBottom: 200, paddingTop: 40}}
         ListFooterComponent={
           connectedDevice ? (
             <View style={{marginTop: 20, flex: 1}}>
@@ -206,8 +211,8 @@ export default function Scan() {
               </Text>
 
               <Text style={{fontWeight: 'bold'}}>Services:</Text>
-              {services.map(s => (
-                <Text key={s.uuid} style={styles.uuidText}>
+              {services.map((s, i) => (
+                <Text key={`${s.uuid}-${i}`} style={styles.uuidText}>
                   {s.uuid}
                 </Text>
               ))}
@@ -230,7 +235,9 @@ export default function Scan() {
                 onChangeText={setInput}
               />
               <Button title="Send Data" onPress={sendData} />
-              <Button title="Disconnect" onPress={disconnect} color="red" />
+              <View style={{marginTop: 10}}>
+                <Button title="Disconnect" onPress={disconnect} color="red" />
+              </View>
               <Text style={{marginTop: 12}}>Received: {received}</Text>
             </View>
           ) : null
@@ -241,7 +248,7 @@ export default function Scan() {
 }
 
 const styles = StyleSheet.create({
-  container: {padding: 16, backgroundColor: 'white'},
+  container: {backgroundColor: 'white'},
   deviceCard: {
     borderWidth: 1,
     padding: 12,
